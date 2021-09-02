@@ -37,7 +37,7 @@ describe("constraints", () => {
 });
 
 describe("test", () => {
-  it("test 1", () => {
+  it("happy path", () => {
     const res = deposit(
       [
         {
@@ -60,7 +60,33 @@ describe("test", () => {
     });
   });
 
-  it("test 1.1", () => {
+  it("happy path out of order portfolios", () => {
+    const res = deposit(
+      [
+        {
+          type: "One time",
+          portfolios: {
+            Retirement: { limit: 500 },
+            "High risk": { limit: 10000 },
+          },
+        },
+        {
+          type: "Monthly",
+          portfolios: {
+            Retirement: { limit: 100 },
+            "High risk": { limit: 0 },
+          },
+        },
+      ],
+      [10500, 100]
+    );
+    expect(res).toEqual({
+      "High risk": { balance: 10000 },
+      Retirement: { balance: 600 },
+    });
+  });
+
+  it("out of order deposit portfolio", () => {
     const res = deposit(
       [
         {
@@ -83,7 +109,7 @@ describe("test", () => {
     });
   });
 
-  it("test 2", () => {
+  it("should only fill up to the limit based on the number of deposits", () => {
     const res = deposit(
       [
         {
@@ -95,11 +121,12 @@ describe("test", () => {
     );
     expect(res).toEqual({
       "High risk": { balance: 0 },
-      Retirement: { balance: 10600 },
+      // Retirement: { balance: 10600 },
+      Retirement: { balance: 200 },
     });
   });
 
-  it("test 3", () => {
+  it("should fill up retirement only to the limit", () => {
     const res = deposit(
       [
         {
@@ -115,6 +142,29 @@ describe("test", () => {
     expect(res).toEqual({
       "High risk": { balance: 0 },
       Retirement: { balance: 10000 },
+    });
+  });
+
+  it("should fill up high risk first", () => {
+    const res = deposit(
+      [
+        {
+          type: "One time",
+          portfolios: {
+            "High risk": { limit: 100000 },
+            Retirement: { limit: 500 },
+          },
+        },
+        {
+          type: "Monthly",
+          portfolios: { "High risk": { limit: 0 }, Retirement: { limit: 100 } },
+        },
+      ],
+      [10500, 100]
+    );
+    expect(res).toEqual({
+      "High risk": { balance: 10500 },
+      Retirement: { balance: 100 },
     });
   });
 });

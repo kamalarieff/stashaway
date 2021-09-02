@@ -156,14 +156,15 @@ function deposit(depositPlan, deposits) {
     let portfolios = currentDepositPlan.portfolios;
 
     for (const property in portfolios) {
-      let currentBalance = account[property].balance;
+      if (currentDeposit == 0) break;
       if (currentDeposit < portfolios[property].limit) {
-        currentBalance = currentBalance + currentDeposit;
+        account[property].balance = account[property].balance + currentDeposit;
+        currentDeposit = 0;
       } else {
-        currentBalance = currentBalance + portfolios[property].limit;
+        account[property].balance =
+          account[property].balance + portfolios[property].limit;
+        currentDeposit = currentDeposit - portfolios[property].limit;
       }
-      currentDeposit = currentDeposit - portfolios[property].limit;
-      account[property].balance = currentBalance;
     }
 
     if (currentDepositPlan.type === "One time") queueDepositPlans.dequeue();
