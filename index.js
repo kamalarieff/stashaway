@@ -16,6 +16,10 @@ class Queue extends Array {
   isEmpty() {
     return this.length === 0;
   }
+
+  setFirst(val) {
+    this[0] = val;
+  }
 }
 
 /**
@@ -129,32 +133,48 @@ function deposit(depositPlan, deposits) {
 
   // need to remove the one time deposit plan when it has been deposited
   const queueDeposits = new Queue(...deposits);
-  const queueDepositPlans = new Queue(
-    // ...[oneTimeDepositPlan, monthlyDepositPlan]
-    ...depositPlan
-  );
 
-  // can you deposit more than the limit set in the portfolio plan???
+  // the order is very important here, it ensures that we do the one time first
+  const queueDepositPlans =
+    oneTimeDepositPlan && monthlyDepositPlan
+      ? new Queue(...[oneTimeDepositPlan, monthlyDepositPlan])
+      : !oneTimeDepositPlan
+      ? new Queue(...[monthlyDepositPlan])
+      : new Queue(...[oneTimeDepositPlan]);
+
+  /* ? new Queue(...[oneTimeDepositPlan, monthlyDepositPlan])
+    : new Queue(...[monthlyDepositPlan]); */
+
+  /* const queueDepositPlans = oneTimeDepositPlan
+    ? new Queue(...[oneTimeDepositPlan, monthlyDepositPlan])
+    : new Queue(...[monthlyDepositPlan]); */
+
   while (queueDeposits.length > 0) {
+    if (queueDepositPlans.isEmpty()) break;
     let currentDeposit = queueDeposits.peek();
     let currentDepositPlan = queueDepositPlans.peek();
-    for (const property in currentDepositPlan.portfolios) {
-      if (currentDeposit < currentDepositPlan.portfolios[property].limit) {
-        account[property].balance = account[property].balance + currentDeposit;
+    let portfolios = currentDepositPlan.portfolios;
+
+    for (const property in portfolios) {
+      let currentBalance = account[property].balance;
+      if (currentDeposit < portfolios[property].limit) {
+        currentBalance = currentBalance + currentDeposit;
       } else {
-        account[property].balance =
-          account[property].balance +
-          currentDepositPlan.portfolios[property].limit;
+        currentBalance = currentBalance + portfolios[property].limit;
       }
-      currentDeposit =
-        currentDeposit - currentDepositPlan.portfolios[property].limit;
+      currentDeposit = currentDeposit - portfolios[property].limit;
+      account[property].balance = currentBalance;
     }
+
     if (currentDepositPlan.type === "One time") queueDepositPlans.dequeue();
 
-    // if (currentDeposit === 0) {
+    // uncomment this if you want to process the same deposit over and over again
+    // queueDeposits.setFirst(currentDeposit);
+
+    // if (queueDeposits.peek() === 0) {
     //   queueDeposits.dequeue();
-    //   continue;
     // }
+
     queueDeposits.dequeue();
   }
 
