@@ -123,27 +123,27 @@ function deposit(depositPlan, deposits) {
   if (!oneTimeDepositPlan && !monthlyDepositPlan)
     throw new Error("Invalid plan types.");
 
+  // the order is very important here, it ensures that we do the one time first
+  const sortedDepositPlan = depositPlan.sort((a, b) => {
+    if (a.type == "One time") return -1;
+    else if (b.type == "One time") return 1;
+    return 0;
+  });
+
   // building the balance object here
-  const account = Object.keys(depositPlan[0].portfolios).reduce(
+  const account = Object.keys(sortedDepositPlan[0].portfolios).reduce(
     (previous, current) => {
       return { ...previous, ...{ [current]: { balance: 0 } } };
     },
     {}
   );
 
-  // need to remove the one time deposit plan when it has been deposited
   const queueDeposits = new Queue(...deposits);
-
-  // the order is very important here, it ensures that we do the one time first
-  const queueDepositPlans =
-    oneTimeDepositPlan && monthlyDepositPlan
-      ? new Queue(...[oneTimeDepositPlan, monthlyDepositPlan])
-      : !oneTimeDepositPlan
-      ? new Queue(...[monthlyDepositPlan])
-      : new Queue(...[oneTimeDepositPlan]);
+  const queueDepositPlans = new Queue(...sortedDepositPlan);
 
   while (queueDeposits.length > 0) {
     if (queueDepositPlans.isEmpty()) break;
+
     let currentDeposit = queueDeposits.peek();
     let currentDepositPlan = queueDepositPlans.peek();
     let portfolios = currentDepositPlan.portfolios;
