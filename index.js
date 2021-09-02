@@ -99,10 +99,13 @@ class Queue extends Array {
  *
  */
 function deposit(depositPlan, deposits) {
+  if (!depositPlan || depositPlan.length == 0)
+    throw new Error("You must pass a non-empty deposit plans.");
+
   if (depositPlan.length > MAX_DEPOSIT_PLANS)
     throw new Error("Exceeded amount of deposit plans.");
 
-  if (deposits.length == 0)
+  if (!deposits || deposits.length == 0)
     throw new Error("You must pass a non-empty deposits.");
 
   // finding the one time deposit plan in the array
@@ -113,6 +116,9 @@ function deposit(depositPlan, deposits) {
   const monthlyDepositPlan = depositPlan.find(
     (plan) => plan.type === "Monthly"
   );
+
+  if (!oneTimeDepositPlan && !monthlyDepositPlan)
+    throw new Error("Invalid plan types.");
 
   // building the balance object here
   const account = Object.keys(depositPlan[0].portfolios).reduce(
