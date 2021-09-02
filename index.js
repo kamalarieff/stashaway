@@ -142,13 +142,6 @@ function deposit(depositPlan, deposits) {
       ? new Queue(...[monthlyDepositPlan])
       : new Queue(...[oneTimeDepositPlan]);
 
-  /* ? new Queue(...[oneTimeDepositPlan, monthlyDepositPlan])
-    : new Queue(...[monthlyDepositPlan]); */
-
-  /* const queueDepositPlans = oneTimeDepositPlan
-    ? new Queue(...[oneTimeDepositPlan, monthlyDepositPlan])
-    : new Queue(...[monthlyDepositPlan]); */
-
   while (queueDeposits.length > 0) {
     if (queueDepositPlans.isEmpty()) break;
     let currentDeposit = queueDeposits.peek();
