@@ -152,7 +152,7 @@ function deposit(depositPlan, deposits) {
 
     for (const property in portfolios) {
       if (currentDeposit == 0) break;
-      if (currentDeposit < portfolios[property].limit) {
+      if (currentDeposit <= portfolios[property].limit) {
         account[property].balance = account[property].balance + currentDeposit;
         currentDeposit = 0;
       } else {
