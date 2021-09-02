@@ -1,4 +1,6 @@
 const MAX_DEPOSIT_PLANS = 2;
+const DEPOSIT_TYPE_ONE_TIME = "One time";
+const DEPOSIT_TYPE_MONTHLY = "Monthly";
 
 class Queue extends Array {
   enqueue(val) {
@@ -113,11 +115,11 @@ function deposit(depositPlan, deposits) {
     throw new Error("You must pass a non-empty deposits.");
 
   const oneTimeDepositPlan = depositPlan.find(
-    (plan) => plan.type === "One time"
+    (plan) => plan.type === DEPOSIT_TYPE_ONE_TIME
   );
 
   const monthlyDepositPlan = depositPlan.find(
-    (plan) => plan.type === "Monthly"
+    (plan) => plan.type === DEPOSIT_TYPE_MONTHLY
   );
 
   if (!oneTimeDepositPlan && !monthlyDepositPlan)
@@ -125,8 +127,8 @@ function deposit(depositPlan, deposits) {
 
   // the order is very important here, it ensures that we do the one time first
   const sortedDepositPlan = depositPlan.sort((a, b) => {
-    if (a.type == "One time") return -1;
-    else if (b.type == "One time") return 1;
+    if (a.type == DEPOSIT_TYPE_ONE_TIME) return -1;
+    else if (b.type == DEPOSIT_TYPE_ONE_TIME) return 1;
     return 0;
   });
 
@@ -160,7 +162,8 @@ function deposit(depositPlan, deposits) {
       }
     }
 
-    if (currentDepositPlan.type === "One time") queueDepositPlans.dequeue();
+    if (currentDepositPlan.type === DEPOSIT_TYPE_ONE_TIME)
+      queueDepositPlans.dequeue();
 
     // uncomment this if you want to process the same deposit over and over again
     // queueDeposits.setFirst(currentDeposit);
