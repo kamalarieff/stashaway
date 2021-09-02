@@ -106,13 +106,13 @@ function deposit(depositPlan, deposits) {
     throw new Error("You must pass a non-empty deposits.");
 
   // finding the one time deposit plan in the array
-  const oneTimeDeposit = depositPlan.find(
+  const oneTimeDepositPlan = depositPlan.find(
     (plan) => plan.type === "One time"
-  )?.portfolios;
+  );
 
-  const monthlyDeposit = depositPlan.find(
+  const monthlyDepositPlan = depositPlan.find(
     (plan) => plan.type === "Monthly"
-  )?.portfolios;
+  );
 
   // building the balance object here
   const account = Object.keys(depositPlan[0].portfolios).reduce(
@@ -122,47 +122,37 @@ function deposit(depositPlan, deposits) {
     {}
   );
 
+  // need to remove the one time deposit plan when it has been deposited
   const queueDeposits = new Queue(...deposits);
-  console.log("queueDeposits", queueDeposits);
+  const queueDepositPlans = new Queue(
+    // ...[oneTimeDepositPlan, monthlyDepositPlan]
+    ...depositPlan
+  );
+
+  // can you deposit more than the limit set in the portfolio plan???
   while (queueDeposits.length > 0) {
     let currentDeposit = queueDeposits.peek();
-    console.log("currentDeposit", currentDeposit);
-    if (oneTimeDeposit) {
-      for (const property in oneTimeDeposit) {
-        if (currentDeposit < oneTimeDeposit[property].limit) {
-          account[property].balance =
-            account[property].balance + currentDeposit;
-        } else {
-          account[property].balance =
-            account[property].balance + oneTimeDeposit[property].limit;
-        }
-        currentDeposit = currentDeposit - oneTimeDeposit[property].limit;
-      }
-      console.log("currentDeposit 1", currentDeposit);
-      if (currentDeposit === 0) {
-        queueDeposits.dequeue();
-        continue;
-      }
-    }
-
-    //
-    for (const property in monthlyDeposit) {
-      if (currentDeposit < monthlyDeposit[property].limit) {
+    let currentDepositPlan = queueDepositPlans.peek();
+    for (const property in currentDepositPlan.portfolios) {
+      if (currentDeposit < currentDepositPlan.portfolios[property].limit) {
         account[property].balance = account[property].balance + currentDeposit;
       } else {
         account[property].balance =
-          account[property].balance + monthlyDeposit[property].limit;
+          account[property].balance +
+          currentDepositPlan.portfolios[property].limit;
       }
-      currentDeposit = currentDeposit - monthlyDeposit[property].limit;
+      currentDeposit =
+        currentDeposit - currentDepositPlan.portfolios[property].limit;
     }
-    if (currentDeposit === 0) {
-      queueDeposits.dequeue();
-      continue;
-    }
+    if (currentDepositPlan.type === "One time") queueDepositPlans.dequeue();
+
+    // if (currentDeposit === 0) {
+    //   queueDeposits.dequeue();
+    //   continue;
+    // }
     queueDeposits.dequeue();
   }
 
-  console.log("account", account);
   return account;
 }
 
