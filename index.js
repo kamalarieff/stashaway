@@ -2,6 +2,39 @@ const MAX_DEPOSIT_PLANS = 2;
 const DEPOSIT_TYPE_ONE_TIME = "One time";
 const DEPOSIT_TYPE_MONTHLY = "Monthly";
 
+/**
+ * @class
+ * @description
+ * This is an implementation of the queue data structure.
+ * JavaScript doesn't have a built in so we create one here
+ *
+ * @example
+ * const queue = new Queue([1, 2, 3]);
+ * queue.peek();
+ * //=> 1
+ *
+ * queue.dequeue();
+ * //=> 1
+ *
+ * console.log(queue)
+ * //=> [2, 3]
+ *
+ * queue.enqueue(4);
+ * //=> [2, 3, 4]
+ *
+ * queue.setFirst(5);
+ * console.log(queue)
+ * //=> [5, 3, 4]
+ *
+ * queue.isEmpty();
+ * //=> false
+ *
+ * queue.dequeue();
+ * queue.dequeue();
+ * queue.dequeue();
+ * queue.isEmpty();
+ * //=> true
+ **/
 class Queue extends Array {
   enqueue(val) {
     this.push(val);
