@@ -36,7 +36,7 @@ describe("constraints", () => {
   });
 });
 
-describe("test", () => {
+describe("new", () => {
   it("happy path", () => {
     const res = deposit(
       [
@@ -52,7 +52,10 @@ describe("test", () => {
           portfolios: { "High risk": { limit: 0 }, Retirement: { limit: 100 } },
         },
       ],
-      [10500, 100]
+      [
+        { type: "One time", amount: 10500 },
+        { type: "Monthly", amount: 100 },
+      ]
     );
     expect(res).toEqual({
       "High risk": { balance: 10000 },
@@ -78,7 +81,10 @@ describe("test", () => {
           },
         },
       ],
-      [10500, 100]
+      [
+        { type: "One time", amount: 10500 },
+        { type: "Monthly", amount: 100 },
+      ]
     );
     expect(res).toEqual({
       "High risk": { balance: 10000 },
@@ -101,7 +107,10 @@ describe("test", () => {
           },
         },
       ],
-      [10500, 100]
+      [
+        { type: "One time", amount: 10500 },
+        { type: "Monthly", amount: 100 },
+      ]
     );
     expect(res).toEqual({
       "High risk": { balance: 10000 },
@@ -117,7 +126,10 @@ describe("test", () => {
           portfolios: { "High risk": { limit: 0 }, Retirement: { limit: 100 } },
         },
       ],
-      [10500, 100]
+      [
+        { type: "Monthly", amount: 100 },
+        { type: "Monthly", amount: 100 },
+      ]
     );
     expect(res).toEqual({
       "High risk": { balance: 0 },
@@ -137,7 +149,10 @@ describe("test", () => {
           },
         },
       ],
-      [10500, 100]
+      [
+        { type: "One time", amount: 10500 },
+        { type: "One time", amount: 100 },
+      ]
     );
     expect(res).toEqual({
       "High risk": { balance: 0 },
@@ -160,7 +175,10 @@ describe("test", () => {
           portfolios: { "High risk": { limit: 0 }, Retirement: { limit: 100 } },
         },
       ],
-      [10500, 100]
+      [
+        { type: "One time", amount: 10500 },
+        { type: "Monthly", amount: 100 },
+      ]
     );
     expect(res).toEqual({
       "High risk": { balance: 10500 },

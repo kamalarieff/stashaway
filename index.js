@@ -135,32 +135,28 @@ function deposit(depositPlan, deposits) {
   const queueDeposits = new Queue(...deposits);
 
   // the order is very important here, it ensures that we do the one time first
-  const queueDepositPlans =
-    oneTimeDepositPlan && monthlyDepositPlan
-      ? new Queue(...[oneTimeDepositPlan, monthlyDepositPlan])
-      : !oneTimeDepositPlan
-      ? new Queue(...[monthlyDepositPlan])
-      : new Queue(...[oneTimeDepositPlan]);
+
+  const depositPlanTable = depositPlan.reduce((previous, current) => {
+    return { ...previous, ...{ [current.type]: current } };
+  }, {});
 
   while (queueDeposits.length > 0) {
-    if (queueDepositPlans.isEmpty()) break;
     let currentDeposit = queueDeposits.peek();
-    let currentDepositPlan = queueDepositPlans.peek();
-    let portfolios = currentDepositPlan.portfolios;
+    let depositAmount = currentDeposit.amount;
+    let depositType = currentDeposit.type;
+    let portfolios = depositPlanTable[depositType].portfolios;
 
     for (const property in portfolios) {
-      if (currentDeposit == 0) break;
-      if (currentDeposit < portfolios[property].limit) {
-        account[property].balance = account[property].balance + currentDeposit;
-        currentDeposit = 0;
+      if (depositAmount == 0) break;
+      if (depositAmount < portfolios[property].limit) {
+        account[property].balance = account[property].balance + depositAmount;
+        depositAmount = 0;
       } else {
         account[property].balance =
           account[property].balance + portfolios[property].limit;
-        currentDeposit = currentDeposit - portfolios[property].limit;
+        depositAmount = depositAmount - portfolios[property].limit;
       }
     }
-
-    if (currentDepositPlan.type === "One time") queueDepositPlans.dequeue();
 
     // uncomment this if you want to process the same deposit over and over again
     // queueDeposits.setFirst(currentDeposit);
