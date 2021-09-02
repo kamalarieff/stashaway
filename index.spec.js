@@ -55,8 +55,8 @@ describe.only("test", () => {
       [10500, 100]
     );
     expect(res).toEqual({
-      "High risk": { balance: 10000 },
-      Retirement: { balance: 600 },
+      "High risk": 10000,
+      Retirement: 600,
     });
   });
 
@@ -81,8 +81,8 @@ describe.only("test", () => {
       [10500, 100]
     );
     expect(res).toEqual({
-      "High risk": { balance: 10000 },
-      Retirement: { balance: 600 },
+      "High risk": 10000,
+      Retirement: 600,
     });
   });
 
@@ -104,8 +104,8 @@ describe.only("test", () => {
       [10500, 100]
     );
     expect(res).toEqual({
-      "High risk": { balance: 10000 },
-      Retirement: { balance: 600 },
+      "High risk": 10000,
+      Retirement: 600,
     });
   });
 
@@ -120,8 +120,8 @@ describe.only("test", () => {
       [10500, 100]
     );
     expect(res).toEqual({
-      "High risk": { balance: 0 },
-      Retirement: { balance: 10600 },
+      "High risk": 0,
+      Retirement: 10600,
     });
   });
 
@@ -139,8 +139,8 @@ describe.only("test", () => {
       [10500, 100]
     );
     expect(res).toEqual({
-      "High risk": { balance: 0 },
-      Retirement: { balance: 10000 },
+      "High risk": 0,
+      Retirement: 10000,
     });
   });
 
@@ -162,8 +162,8 @@ describe.only("test", () => {
       [10500, 100]
     );
     expect(res).toEqual({
-      "High risk": { balance: 10600 },
-      Retirement: { balance: 0 },
+      "High risk": 10600,
+      Retirement: 0,
     });
   });
 });

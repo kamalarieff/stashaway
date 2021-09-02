@@ -170,7 +170,7 @@ function deposit(depositPlan, deposits) {
   // building the balance object here
   const account = Object.keys(sortedDepositPlan[0].portfolios).reduce(
     (previous, current) => {
-      return { ...previous, ...{ [current]: { balance: 0 } } };
+      return { ...previous, ...{ [current]: 0 } };
     },
     {}
   );
@@ -185,11 +185,10 @@ function deposit(depositPlan, deposits) {
 
     for (const property in portfolios) {
       if (sum >= portfolios[property].limit) {
-        account[property].balance =
-          account[property].balance + portfolios[property].limit;
+        account[property] = account[property] + portfolios[property].limit;
         sum = sum - portfolios[property].limit;
       } else {
-        account[property].balance = account[property].balance + sum;
+        account[property] = account[property] + sum;
         sum = 0;
       }
     }
