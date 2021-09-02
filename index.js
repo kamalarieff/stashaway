@@ -108,7 +108,6 @@ function deposit(depositPlan, deposits) {
   if (!deposits || deposits.length == 0)
     throw new Error("You must pass a non-empty deposits.");
 
-  // finding the one time deposit plan in the array
   const oneTimeDepositPlan = depositPlan.find(
     (plan) => plan.type === "One time"
   );
@@ -164,17 +163,3 @@ function deposit(depositPlan, deposits) {
 
 // export default deposit;
 module.exports = deposit;
-
-/* deposit(
-  [
-    {
-      type: "One time",
-      portfolios: { "High risk": { limit: 10000 }, Retirement: { limit: 500 } },
-    },
-    {
-      type: "Monthly",
-      portfolios: { "High risk": { limit: 0 }, Retirement: { limit: 100 } },
-    },
-  ],
-  [10500, 100, 100, 100, 100]
-); */
