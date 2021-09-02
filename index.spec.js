@@ -36,7 +36,7 @@ describe("constraints", () => {
   });
 });
 
-describe("test", () => {
+describe.only("test", () => {
   it("happy path", () => {
     const res = deposit(
       [
@@ -121,8 +121,7 @@ describe("test", () => {
     );
     expect(res).toEqual({
       "High risk": { balance: 0 },
-      // Retirement: { balance: 10600 },
-      Retirement: { balance: 200 },
+      Retirement: { balance: 10600 },
     });
   });
 
@@ -163,8 +162,8 @@ describe("test", () => {
       [10500, 100]
     );
     expect(res).toEqual({
-      "High risk": { balance: 10500 },
-      Retirement: { balance: 100 },
+      "High risk": { balance: 10600 },
+      Retirement: { balance: 0 },
     });
   });
 });

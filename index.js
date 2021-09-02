@@ -158,6 +158,8 @@ function deposit(depositPlan, deposits) {
   if (!oneTimeDepositPlan && !monthlyDepositPlan)
     throw new Error("Invalid plan types.");
 
+  let sum = deposits.reduce((previous, current) => previous + current, 0);
+
   // the order is very important here, it ensures that we do the one time first
   const sortedDepositPlan = depositPlan.sort((a, b) => {
     if (a.type == DEPOSIT_TYPE_ONE_TIME) return -1;
@@ -173,39 +175,27 @@ function deposit(depositPlan, deposits) {
     {}
   );
 
-  const queueDeposits = new Queue(...deposits);
   const queueDepositPlans = new Queue(...sortedDepositPlan);
 
-  while (queueDeposits.length > 0) {
+  while (sum > 0) {
     if (queueDepositPlans.isEmpty()) break;
 
-    let currentDeposit = queueDeposits.peek();
     let currentDepositPlan = queueDepositPlans.peek();
     let portfolios = currentDepositPlan.portfolios;
 
     for (const property in portfolios) {
-      if (currentDeposit == 0) break;
-      if (currentDeposit <= portfolios[property].limit) {
-        account[property].balance = account[property].balance + currentDeposit;
-        currentDeposit = 0;
-      } else {
+      if (sum >= portfolios[property].limit) {
         account[property].balance =
           account[property].balance + portfolios[property].limit;
-        currentDeposit = currentDeposit - portfolios[property].limit;
+        sum = sum - portfolios[property].limit;
+      } else {
+        account[property].balance = account[property].balance + sum;
+        sum = 0;
       }
     }
 
     if (currentDepositPlan.type === DEPOSIT_TYPE_ONE_TIME)
       queueDepositPlans.dequeue();
-
-    // uncomment this if you want to process the same deposit over and over again
-    // queueDeposits.setFirst(currentDeposit);
-
-    // if (queueDeposits.peek() === 0) {
-    //   queueDeposits.dequeue();
-    // }
-
-    queueDeposits.dequeue();
   }
 
   return account;
