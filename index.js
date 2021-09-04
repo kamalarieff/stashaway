@@ -1,6 +1,7 @@
 const MAX_DEPOSIT_PLANS = 2;
 const DEPOSIT_TYPE_ONE_TIME = "One time";
 const DEPOSIT_TYPE_MONTHLY = "Monthly";
+const VALID_PLAN_TYPES = [DEPOSIT_TYPE_ONE_TIME, DEPOSIT_TYPE_MONTHLY];
 
 /**
  * @class
@@ -213,16 +214,11 @@ function checkDepositPlansConstraints(depositPlans) {
   if (depositPlans.length > MAX_DEPOSIT_PLANS)
     throw new Error("Exceeded amount of deposit plans.");
 
-  const oneTimeDepositPlan = depositPlans.find(
-    (plan) => plan.type === DEPOSIT_TYPE_ONE_TIME
+  const invalidPlans = depositPlans.filter(
+    (plan) => VALID_PLAN_TYPES.includes(plan.type) === false
   );
 
-  const monthlyDepositPlan = depositPlans.find(
-    (plan) => plan.type === DEPOSIT_TYPE_MONTHLY
-  );
-
-  if (!oneTimeDepositPlan && !monthlyDepositPlan)
-    throw new Error("Invalid plan types.");
+  if (invalidPlans.length != 0) throw new Error("Invalid plan types.");
 }
 
 /**
