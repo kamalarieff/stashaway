@@ -1,4 +1,4 @@
-import { DepositPlan } from "../depositPlans";
+import { DepositPlan } from "../depositPlan";
 
 export interface Balance {
   [key: string]: number;
