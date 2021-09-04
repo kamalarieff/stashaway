@@ -119,6 +119,3 @@ export default function deposit(
 
   return account;
 }
-
-// export default deposit;
-module.exports = deposit;
