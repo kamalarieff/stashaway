@@ -167,7 +167,7 @@ describe("test", () => {
     });
   });
 
-  it("scenario 2", () => {
+  it("scenario 2 from the email", () => {
     const res = deposit(
       [
         {
