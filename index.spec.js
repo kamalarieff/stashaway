@@ -36,7 +36,7 @@ describe("constraints", () => {
   });
 });
 
-describe.only("test", () => {
+describe("test", () => {
   it("happy path", () => {
     const res = deposit(
       [
