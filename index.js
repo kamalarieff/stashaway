@@ -22,10 +22,6 @@ const DEPOSIT_TYPE_MONTHLY = "Monthly";
  * queue.enqueue(4);
  * //=> [2, 3, 4]
  *
- * queue.setFirst(5);
- * console.log(queue)
- * //=> [5, 3, 4]
- *
  * queue.isEmpty();
  * //=> false
  *
@@ -50,10 +46,6 @@ class Queue extends Array {
 
   isEmpty() {
     return this.length === 0;
-  }
-
-  setFirst(val) {
-    this[0] = val;
   }
 }
 
