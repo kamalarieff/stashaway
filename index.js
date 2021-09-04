@@ -52,7 +52,7 @@ class Queue extends Array {
 
 /**
  * @description
- * Returns total
+ * Returns sum
  *
  * @param {Number[]} deposits - Array of deposits
  *
