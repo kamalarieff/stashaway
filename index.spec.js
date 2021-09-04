@@ -166,4 +166,27 @@ describe.only("test", () => {
       Retirement: 0,
     });
   });
+
+  it("scenario 2", () => {
+    const res = deposit(
+      [
+        {
+          type: "One time",
+          portfolios: {
+            "High risk": { limit: 100 },
+            Retirement: { limit: 500 },
+          },
+        },
+        {
+          type: "Monthly",
+          portfolios: { "High risk": { limit: 0 }, Retirement: { limit: 100 } },
+        },
+      ],
+      [1000000, 1000000, 1000000]
+    );
+    expect(res).toEqual({
+      "High risk": 100,
+      Retirement: 2999900,
+    });
+  });
 });

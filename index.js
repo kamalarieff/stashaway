@@ -59,6 +59,131 @@ class Queue extends Array {
 
 /**
  * @description
+ * Returns total
+ *
+ * @param {Number[]} deposits - Array of deposits
+ *
+ * @returns {Number} Sum of the deposits
+ *
+ * @example
+ * getSum([1, 2, 3])
+ * //=> 6
+ */
+function getSum(deposits) {
+  return deposits.reduce((previous, current) => previous + current, 0);
+}
+
+/**
+ * @description
+ * Sort the deposit plans by the One time type first. Rest can follow
+ *
+ * @param {{
+ *          type: String
+ *          portfolios: {
+ *              id: {
+ *                  limit: Number
+ *              }
+ *          }
+ *        }[]} depositPlans - List of deposit plans
+ *
+ * @returns {{
+ *          type: String
+ *          portfolios: {
+ *              id: {
+ *                  limit: Number
+ *              }
+ *          }
+ *        }[]} depositPlans - Sorted list of deposit plans
+ *
+ * @example
+ * sortDepositPlans([
+ *   {
+ *     type: "Monthly",
+ *     portfolios: {
+ *       "High risk": {
+ *         limit: 10000
+ *       }
+ *     }
+ *   },
+ *   {
+ *     type: "One time",
+ *     portfolios: {
+ *       "High risk": {
+ *         limit: 10000
+ *       }
+ *     }
+ *   }
+ * ])
+ * //=> [
+ *   {
+ *     type: "One time",
+ *     portfolios: {
+ *       "High risk": {
+ *         limit: 10000
+ *       }
+ *     }
+ *   },
+ *   {
+ *     type: "Monthly",
+ *     portfolios: {
+ *       "High risk": {
+ *         limit: 10000
+ *       }
+ *     }
+ *   },
+ * ]
+ */
+function sortDepositPlans(depositPlans) {
+  return depositPlans.sort((a, b) => {
+    if (a.type == DEPOSIT_TYPE_ONE_TIME) return -1;
+    else if (b.type == DEPOSIT_TYPE_ONE_TIME) return 1;
+    return 0;
+  });
+}
+
+/**
+ * @description
+ * Build the balance object via the first deposit plan
+ *
+ * @param {{
+ *          type: String
+ *          portfolios: {
+ *              id: {
+ *                  limit: Number
+ *              }
+ *          }
+ *        }[]} depositPlans - List of deposit plans
+ *
+ * @returns {Object} Balance object
+ *
+ * @example
+ * buildBalanceObject([
+ *   {
+ *     type: "One time",
+ *     portfolios: {
+ *       "High risk": {
+ *         limit: 10000
+ *       }
+ *       "Retirement": {
+ *         limit: 10000
+ *       }
+ *     }
+ *   }
+ * ])
+ * //=> { High risk: 0, Retirement: 0 }
+ */
+function buildBalanceObject(depositPlans) {
+  const [firstDepositPlan] = depositPlans;
+  return Object.keys(firstDepositPlan.portfolios).reduce(
+    (previous, current) => {
+      return { ...previous, ...{ [current]: 0 } };
+    },
+    {}
+  );
+}
+
+/**
+ * @description
  * Deposit takes a list of deposit plans and a list of deposits that will
  * be credited into the specific deposit plans
  *
@@ -71,6 +196,7 @@ class Queue extends Array {
  *          }
  *        }[]} depositPlan - List of deposit plans
  * @param {Number[]} deposits - Number of deposits
+ * @returns {Object} Balance of all portfolios
  *
  * @example
  * deposit([
@@ -137,43 +263,33 @@ class Queue extends Array {
  * //=> { "One time": 10000, "Retirement": 600 }
  *
  */
-function deposit(depositPlan, deposits) {
-  if (!depositPlan || depositPlan.length == 0)
+function deposit(depositPlans, deposits) {
+  if (!depositPlans || depositPlans.length == 0)
     throw new Error("You must pass a non-empty deposit plans.");
 
-  if (depositPlan.length > MAX_DEPOSIT_PLANS)
+  if (depositPlans.length > MAX_DEPOSIT_PLANS)
     throw new Error("Exceeded amount of deposit plans.");
 
   if (!deposits || deposits.length == 0)
     throw new Error("You must pass a non-empty deposits.");
 
-  const oneTimeDepositPlan = depositPlan.find(
+  const oneTimeDepositPlan = depositPlans.find(
     (plan) => plan.type === DEPOSIT_TYPE_ONE_TIME
   );
 
-  const monthlyDepositPlan = depositPlan.find(
+  const monthlyDepositPlan = depositPlans.find(
     (plan) => plan.type === DEPOSIT_TYPE_MONTHLY
   );
 
   if (!oneTimeDepositPlan && !monthlyDepositPlan)
     throw new Error("Invalid plan types.");
 
-  let sum = deposits.reduce((previous, current) => previous + current, 0);
+  let sum = getSum(deposits);
 
   // the order is very important here, it ensures that we do the one time first
-  const sortedDepositPlan = depositPlan.sort((a, b) => {
-    if (a.type == DEPOSIT_TYPE_ONE_TIME) return -1;
-    else if (b.type == DEPOSIT_TYPE_ONE_TIME) return 1;
-    return 0;
-  });
+  const sortedDepositPlan = sortDepositPlans(depositPlans);
 
-  // building the balance object here
-  const account = Object.keys(sortedDepositPlan[0].portfolios).reduce(
-    (previous, current) => {
-      return { ...previous, ...{ [current]: 0 } };
-    },
-    {}
-  );
+  const account = buildBalanceObject(sortedDepositPlan);
 
   const queueDepositPlans = new Queue(...sortedDepositPlan);
 
