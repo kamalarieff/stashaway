@@ -293,9 +293,7 @@ function deposit(depositPlans, deposits) {
 
   const queueDepositPlans = new Queue(...sortedDepositPlan);
 
-  while (sum > 0) {
-    if (queueDepositPlans.isEmpty()) break;
-
+  while (sum > 0 && queueDepositPlans.isEmpty() === false) {
     let currentDepositPlan = queueDepositPlans.peek();
     let portfolios = currentDepositPlan.portfolios;
 
