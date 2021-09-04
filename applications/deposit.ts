@@ -8,7 +8,10 @@ import {
   checkDepositPlansConstraints,
   sortDepositPlans,
 } from "../domains/depositPlan";
-import { checkDepositsConstraints, getSum } from "../domains/deposit";
+import {
+  checkDepositsConstraints,
+  getSum as getDepositsSum,
+} from "../domains/deposit";
 
 /**
  * @description
@@ -87,7 +90,7 @@ export default function deposit(
   checkDepositsConstraints(deposits);
   checkDepositPlansConstraints(depositPlans);
 
-  let sum = getSum(deposits);
+  let sum = getDepositsSum(deposits);
 
   // the order is very important here, it ensures that we do the one time first
   const sortedDepositPlan = sortDepositPlans(depositPlans);
