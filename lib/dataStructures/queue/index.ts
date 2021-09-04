@@ -1,3 +1,21 @@
+/* export default class Queue extends Array {
+  enqueue(val: any) {
+    this.push(val);
+  }
+
+  dequeue() {
+    return this.shift();
+  }
+
+  peek() {
+    return this[0];
+  }
+
+  isEmpty() {
+    return this.length === 0;
+  }
+} */
+
 /**
  * @class
  * @description
@@ -27,22 +45,26 @@
  * queue.isEmpty();
  * //=> true
  **/
-class Queue extends Array {
-  enqueue(val) {
-    this.push(val);
+export default class Queue<T> {
+  _store: T[] = [];
+
+  constructor(val: T[]) {
+    this._store = val;
   }
 
-  dequeue() {
-    return this.shift();
+  enqueue(val: T) {
+    this._store.push(val);
+  }
+
+  dequeue(): T | undefined {
+    return this._store.shift();
   }
 
   peek() {
-    return this[0];
+    return this._store[0];
   }
 
   isEmpty() {
-    return this.length === 0;
+    return this._store.length === 0;
   }
 }
-
-module.exports = Queue;

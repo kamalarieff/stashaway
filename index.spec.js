@@ -1,4 +1,4 @@
-const deposit = require("./index");
+import deposit from "./applications/deposit";
 
 describe("constraints", () => {
   it("no deposit plans", () => {
