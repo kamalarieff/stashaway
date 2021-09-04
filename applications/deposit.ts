@@ -1,9 +1,9 @@
 import { DEPOSIT_TYPE_ONE_TIME } from "../lib/constants";
 
 import Queue from "../lib/dataStructures/queue";
-import { buildBalanceObject } from "../domains/balance";
 import type { DepositPlan } from "../domains/depositPlan";
 import type { Deposit } from "../domains/deposit";
+import { buildBalanceObject } from "../domains/balance";
 import {
   checkDepositPlansConstraints,
   sortDepositPlans,
