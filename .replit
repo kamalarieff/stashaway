@@ -1,0 +1,3 @@
+run="npm test"
+language="node"
+onBoot="Run npm test to see the deposit function in action. See the README.md."

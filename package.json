@@ -1,6 +1,5 @@
 {
   "scripts": {
-    "start": "ts-node index.js",
     "test": "jest"
   },
   "devDependencies": {
