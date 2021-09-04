@@ -55,8 +55,8 @@ describe("test", () => {
       [10500, 100]
     );
     expect(res).toEqual({
-      "High risk": { balance: 10000 },
-      Retirement: { balance: 600 },
+      "High risk": 10000,
+      Retirement: 600,
     });
   });
 
@@ -81,8 +81,8 @@ describe("test", () => {
       [10500, 100]
     );
     expect(res).toEqual({
-      "High risk": { balance: 10000 },
-      Retirement: { balance: 600 },
+      "High risk": 10000,
+      Retirement: 600,
     });
   });
 
@@ -104,8 +104,8 @@ describe("test", () => {
       [10500, 100]
     );
     expect(res).toEqual({
-      "High risk": { balance: 10000 },
-      Retirement: { balance: 600 },
+      "High risk": 10000,
+      Retirement: 600,
     });
   });
 
@@ -120,9 +120,8 @@ describe("test", () => {
       [10500, 100]
     );
     expect(res).toEqual({
-      "High risk": { balance: 0 },
-      // Retirement: { balance: 10600 },
-      Retirement: { balance: 200 },
+      "High risk": 0,
+      Retirement: 10600,
     });
   });
 
@@ -140,8 +139,8 @@ describe("test", () => {
       [10500, 100]
     );
     expect(res).toEqual({
-      "High risk": { balance: 0 },
-      Retirement: { balance: 10000 },
+      "High risk": 0,
+      Retirement: 10000,
     });
   });
 
@@ -163,8 +162,31 @@ describe("test", () => {
       [10500, 100]
     );
     expect(res).toEqual({
-      "High risk": { balance: 10500 },
-      Retirement: { balance: 100 },
+      "High risk": 10600,
+      Retirement: 0,
+    });
+  });
+
+  it("scenario 2", () => {
+    const res = deposit(
+      [
+        {
+          type: "One time",
+          portfolios: {
+            "High risk": { limit: 100 },
+            Retirement: { limit: 500 },
+          },
+        },
+        {
+          type: "Monthly",
+          portfolios: { "High risk": { limit: 0 }, Retirement: { limit: 100 } },
+        },
+      ],
+      [1000000, 1000000, 1000000]
+    );
+    expect(res).toEqual({
+      "High risk": 100,
+      Retirement: 2999900,
     });
   });
 });
